@@ -1,0 +1,167 @@
+---
+sidebar: sidebar
+permalink: task_tiering.html
+keywords: tier, tiering, cold data, hot data, storage tiering, data tiering, S3 tiering, fabricpool, fabric pool, s3 endpoint, endpoint, connection, performance tier, capacity tier, object store, azure tiering, blob tiering, azure blob, container, inactive, gcp, tiering in gcp, tiering requirements
+summary: You can reduce storage costs by combining an SSD or HDD performance tier for hot data with an object storage capacity tier for inactive data.
+---
+
+= Tiering inactive data to low-cost object storage
+:hardbreaks:
+:nofooter:
+:icons: font
+:linkattrs:
+:imagesdir: ./media/
+
+[.lead]
+
+You can reduce storage costs by combining an SSD or HDD performance tier for hot data with an object storage capacity tier for inactive data. For a high-level overview, see link:concept_data_tiering.html[Data tiering overview].
+
+To set up data tiering, you simply need to do the following:
+
+==== image:number1.png[Number 1] Choose a supported configuration
+
+[role="quick-margin-para"]
+Most configurations are supported. If you have a Cloud Volumes ONTAP Standard, Premium, or BYOL system running the most recent version, then you should be good to go. link:task_tiering.html#configurations-that-support-data-tiering[Learn more].
+
+==== image:number2.png[Number 2] Ensure connectivity between Cloud Volumes ONTAP and object storage
+
+[role="quick-margin-list"]
+* For AWS, you'll need a VPC Endpoint to S3. <<Requirements for tiering data in AWS,Learn more>>.
+* For Azure, you won't need to do anything as long as Cloud Manager has the required permissions. <<Requirements for tiering data in Microsoft Azure,Learn more>>.
+* For GCP, you need to add a GCP account to Cloud Manager and configure the subnet for Private Google Access. <<Requirements for tiering data in Google Cloud Platform,Learn more>>.
+
+==== image:number3.png[Number 3] Choose a tiering policy when creating, modifying, or replicating a volume
+
+[role="quick-margin-para"]
+Cloud Manager prompts you to choose a tiering policy when you create, modify, or replicate a volume.
+
+[role="quick-margin-list"]
+* link:task_tiering.html#tiering-data-from-read-write-volumes[Tiering data on read-write volumes]
+* link:task_tiering.html#tiering-data-from-data-protection-volumes[Tiering data on data protection volumes]
+
+[NOTE]
+.What's not required for data tiering
+====
+* You don't need to install a feature license to enable data tiering.
+* You don't need to create the capacity tier (an S3 bucket, Azure Blob container, or GCP bucket). Cloud Manager does that for you.
+====
+
+== Configurations that support data tiering
+
+You can enable data tiering when using specific configurations and features:
+
+* Data tiering is supported with Cloud Volumes ONTAP Standard, Premium, and BYOL, starting with the following versions:
+** Version 9.2 in AWS
+** Version 9.4 in Azure with single node systems
+** Version 9.6 in Azure with HA pairs
+** Version 9.6 in GCP
++
+NOTE: Data tiering is not supported in Azure with the DS3_v2 virtual machine type.
+
+* In AWS, the performance tier can be General Purpose SSDs, Provisioned IOPS SSDs, or Throughput Optimized HDDs.
+
+* In Azure, the performance tier can be Premium SSD managed disks, Standard SSD managed disks, or Standard HDD managed disks.
+
+* In GCP, the performance tier can be either SSDs or HDDs (standard disks).
+
+* Data tiering is supported with encryption technologies.
+
+* Thin provisioning must be enabled on volumes.
+
+== Requirements to tier cold data to AWS S3
+
+Ensure that Cloud Volumes ONTAP has a connection to S3. The best way to provide that connection is by creating a VPC Endpoint to the S3 service. For instructions, see https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpce-gateway.html#create-gateway-endpoint[AWS Documentation: Creating a Gateway Endpoint^].
+
+When you create the VPC Endpoint, be sure to select the region, VPC, and route table that corresponds to the Cloud Volumes ONTAP instance. You must also modify the security group to add an outbound HTTPS rule that enables traffic to the S3 endpoint. Otherwise, Cloud Volumes ONTAP cannot connect to the S3 service.
+
+If you experience any issues, see https://aws.amazon.com/premiumsupport/knowledge-center/connect-s3-vpc-endpoint/[AWS Support Knowledge Center: Why can’t I connect to an S3 bucket using a gateway VPC endpoint?^].
+
+== Requirements to tier cold data to Azure Blob storage
+
+You don't need to set up a connection between the performance tier and the capacity tier as long as Cloud Manager has the required permissions. Cloud Manager enables a VNet service endpoint for you if the Cloud Manager policy has these permissions:
+
+[source,json]
+"Microsoft.Network/virtualNetworks/subnets/write",
+"Microsoft.Network/routeTables/join/action",
+
+The permissions are included in the latest https://mysupport.netapp.com/cloudontap/iampolicies[Cloud Manager policy].
+
+== Requirements to tier cold data to a Google Cloud Storage bucket
+
+* You need to add a Google Cloud Platform account to Cloud Manager by entering storage access keys for a service account. The keys enable Cloud Manager to set up a Cloud Storage bucket for data tiering. For instructions, see link:task_adding_gcp_accounts.html[Setting up and adding GCP accounts to Cloud Manager].
+
+* The subnet in which Cloud Volumes ONTAP resides must be configured for Private Google Access. For instructions, refer to https://cloud.google.com/vpc/docs/configure-private-google-access[Google Cloud Documentation: Configuring Private Google Access^].
+
+== Tiering data from read-write volumes
+
+Cloud Volumes ONTAP can tier inactive data on read-write volumes to cost-effective object storage, freeing up the performance tier for hot data.
+
+.Steps
+
+. In the working environment, create a new volume or change the tier of an existing volume:
++
+[cols=2*,options="header",cols="30,70"]
+|===
+
+| Task
+| Action
+
+| Create a new volume	| Click *Add New Volume*.
+
+| Modify an existing volume | Select the volume and click *Change Disk Type & Tiering Policy*.
+
+|===
+
+. Select the Snapshot Only policy or the Auto policy.
++
+For a description of these policies, see link:concept_data_tiering.html[Data tiering overview].
++
+*Example*
++
+image:screenshot_tiered_storage.gif[Screenshot that shows the icon to enable tiering to object storage.]
++
+Cloud Manager creates a new aggregate for the volume if a data tiering-enabled aggregate does not already exist.
++
+TIP: If you prefer to create aggregates yourself, you can enable data tiering on aggregates when you create them.
+
+== Tiering data from data protection volumes
+
+Cloud Volumes ONTAP can tier data from a data protection volume to a capacity tier. If you activate the destination volume, the data gradually moves to the performance tier as it is read.
+
+.Steps
+
+. On the Working Environments page, select the working environment that contains the source volume, and then drag it to the working environment to which you want to replicate the volume.
+
+. Follow the prompts until you reach the tiering page and enable data tiering to object storage.
++
+*Example*
++
+image:screenshot_replication_tiering.gif[Screenshot that shows the S3 tiering option when replicating a volume.]
++
+For help with replicating data, see link:task_replicating_data.html[Replicating data to and from the cloud].
+
+== Changing the tiering level in AWS or Azure
+
+When you enable data tiering, Cloud Volumes ONTAP tiers inactive data to the S3 _Standard_ storage class in AWS or to the _hot_ storage tier in Azure. After you deploy Cloud Volumes ONTAP, you can reduce your storage costs by changing the tiering level for inactive data that has not been accessed for 30 days. The access costs are higher if you do access the data, so you must take that into consideration before you change the tiering level.
+
+NOTE: You can't change the tiering level in GCP because only the _Regional_ storage class is supported at this time.
+
+.About this task
+
+The tiering level is system wide—​it is not per volume.
+
+In AWS, you can change the tiering level so inactive data moves to one of the following storage classes after 30 days of inactivity:
+
+* Intelligent Tiering
+* Standard-Infrequent Access
+* One Zone-Infrequent Access
+
+In Azure, you can change the tiering level so inactive data moves to the  _cool_ storage tier after 30 days of inactivity.
+
+For more information about how tiering levels work, see link:concept_data_tiering.html[Data tiering overview].
+
+.Steps
+
+. From the working environment, click the menu icon and then click *S3 Storage Classes* or *Blob Storage Tiering*.
+
+. Choose the tiering level and then click *Save*.

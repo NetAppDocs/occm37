@@ -1,0 +1,81 @@
+---
+sidebar: sidebar
+permalink: task_launching_aws_mktp.html
+keywords: install, installation, installing, marketplace, aws, launch, launching, ec2 console, iam role
+summary: It is best to launch Cloud Manager in AWS using NetApp Cloud Central, but you can launch it from the AWS Marketplace, if needed.
+---
+
+= Launching Cloud Manager from the AWS Marketplace
+:hardbreaks:
+:nofooter:
+:icons: font
+:linkattrs:
+:imagesdir: ./media/
+
+[.lead]
+
+It's best to launch Cloud Manager in AWS using https://cloud.netapp.com[NetApp Cloud Central^], but you can launch it from the AWS Marketplace, if needed.
+
+TIP: If you launch Cloud Manager from the AWS Marketplace, Cloud Manager is still integrated with NetApp Cloud Central. link:concept_cloud_central.html[Learn more about the integration].
+
+.About this task
+
+The following steps describe how to launch the instance from the EC2 Console because the console enables you to attach an IAM role to the Cloud Manager instance. This is not possible using the *Launch from Website* action.
+
+.Steps
+
+. Create an IAM policy and role for the EC2 instance:
+
+.. Download the Cloud Manager IAM policy from the following location:
++
+https://mysupport.netapp.com/cloudontap/iampolicies[NetApp Cloud Manager: AWS, Azure, and GCP Policies^]
+
+.. From the IAM console, create your own policy by copying and pasting the text from the Cloud Manager IAM policy.
+
+.. Create an IAM role with the role type Amazon EC2 and attach the policy that you created in the previous step to the role.
+
+. https://aws.amazon.com/marketplace/pp/B07QX2QLXX[Subscribe from the AWS Marketplace^] to ensure that there's no disruption of service after your free trial of Cloud Volumes ONTAP ends. You'll be charged from this subscription for every Cloud Volumes ONTAP 9.6 and later PAYGO system that you create and each add-on feature that you enable.
+
+. Now go to the https://aws.amazon.com/marketplace/pp/B018REK8QG[Cloud Manager page on the AWS Marketplace^] to deploy Cloud Manager from an AMI.
+
+. On the Marketplace page, click *Continue to Subscribe* and then click *Continue to Configuration*.
+
+. Change any of the default options and click *Continue to Launch*.
+
+. Under *Choose Action*, select *Launch through EC2* and then click *Launch*.
+
+. Follow the prompts to configure and deploy the instance:
+
+* *Choose Instance Type*: Depending on region availability, choose one of the supported instance types (t3.medium  is recommended).
++
+link:reference_cloud_mgr_reqs.html[Review the list of supported instance types].
+
+* *Configure Instance*: Select a VPC and subnet, the IAM role that you created in step 1, and other configuration options that meet your requirements.
++
+image:screenshot_aws_iam_role.gif[A screenshot that shows fields on the Configure Instance page in AWS. The IAM role that you should have created in step 1 is selected.]
+
+* *Add Storage*: Keep the default storage options.
+
+* *Add Tags*: Enter tags for the instance, if desired.
+
+* *Configure Security Group*: Specify the required connection methods for the Cloud Manager instance: SSH, HTTP, and HTTPS.
+
+* *Review*: Review your selections and click *Launch*.
++
+AWS launches the software with the specified settings. The Cloud Manager instance and software should be running in approximately five minutes.
+
+. Open a web browser from a host that has a connection to the Cloud Manager virtual machine and enter the following URL:
++
+http://_ipaddress_:80
+
+. After you log in, set up Cloud Manager:
+.. Specify the Cloud Central account to associate with this Cloud Manager system.
++
+link:concept_cloud_central_accounts.html[Learn about Cloud Central accounts].
+.. Enter a name for the system.
++
+image:screenshot_set_up_cloud_manager.gif[A screenshot that shows the set up Cloud Manager screen that enables you to select a Cloud Central account and name the Cloud Manager system.]
+
+.Result
+
+Cloud Manager is now installed and set up.

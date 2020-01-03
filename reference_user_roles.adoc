@@ -1,0 +1,58 @@
+---
+sidebar: sidebar
+permalink: reference_user_roles.html
+keywords: user, users, roles, role, task, permission, permissions, tasks, admin, Account Admin, Workspace Admin
+summary: The Account Admin and Workspace Admin roles provide specific permissions to users.
+translate: false
+---
+
+= Roles
+:hardbreaks:
+:nofooter:
+:icons: font
+:linkattrs:
+:imagesdir: ./media/
+
+[.lead]
+The Account Admin and Workspace Admin roles provide specific permissions to users.
+
+[cols=3*,options="header",cols="34,33,33"]
+|===
+
+| Task
+| Account Admin
+| Workspace Admin
+
+| Manage working environments |	Yes |	Yes, for associated workspaces
+
+| View data replication status |	Yes |	Yes, for associated workspaces
+
+| View the timeline |	Yes |	Yes, for associated workspaces
+
+| Delete working environments | Yes | No
+
+| Connect Kubernetes clusters to Cloud Volumes ONTAP | Yes | No
+
+| Receive the Cloud Volumes ONTAP report | Yes | No
+
+| Manage Cloud Central accounts |	Yes |	No
+
+| Manage cloud provider accounts | Yes | No
+
+| Modify Cloud Manager settings |	Yes |	No
+
+| View and manage the Support Dashboard |	Yes |	No
+
+| Remove working environments from Cloud Manager |	Yes |	No
+
+| Update Cloud Manager |	Yes |	No
+
+| Install an HTTPS certificate |	Yes |	No
+
+| Set up Active Directory |	Yes |	No
+|===
+
+.Related links
+
+* link:task_setting_up_cloud_central_accounts.html[Setting up workspaces and users in the Cloud Central account]
+* link:task_managing_cloud_central_accounts.html[Managing workspaces and users in the Cloud Central account]

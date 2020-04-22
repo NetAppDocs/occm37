@@ -29,7 +29,7 @@ video::video_subscribing_aws.mp4[width=848, height=480]
 
 TIP: If multiple IAM users work in the same AWS account, then each user needs to subscribe. After the first user subscribes, AWS shows subsequent users that they're already subscribed, as shown in the image below. While a subscription is in place for the AWS account, each IAM user needs to associate themselves with the subscription. If you see the message shown below, click the *click here* link to go to Cloud Central and complete the process.
 
-image:screenshot_aws_marketplace.gif[A screenshot that shows the subscription page for Cloud Manager for Cloud Volumes ONTAP when the AWS account already has a subscription, but a particular IAM user might not.]
+image:screenshot_aws_marketplace.gif["A screenshot that shows the subscription page for Cloud Manager for Cloud Volumes ONTAP when the AWS account already has a subscription, but a particular IAM user might not."]
 
 === Subscribing for BYOL
 

@@ -94,10 +94,6 @@ When you choose GCP as the cloud provider, you're prompted by Google to log in t
 [role="quick-margin-para"]
 Once Cloud Manager is ready, just click Create, select the type of system that you would like to deploy, and complete the steps in the wizard. After 25 minutes, your first Cloud Volumes ONTAP system should be up and running.
 
-Watch the following video for a walk through of these steps:
-
-video::EuBzgFYCQrA[youtube, width=848, height=480]
-
 .Related links
 
 * link:concept_evaluating.html[Evaluating]
